@@ -5,6 +5,7 @@
 package Vista;
 
 import Controlador.Interprete;
+import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,11 +18,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainFrame extends javax.swing.JFrame
 {
-    private AboutFrame frmAbout;
     private final JFileChooser selectorDeArchivo;
-    private File directorioRaiz;
+    //private final File directorioRaiz;
     private long loggerEventID;
+    private AboutFrame frmAbout;
     private Interprete inter;
+    private Grafo grafo;
+    private Lienzo lienzo;
     
     public MainFrame()
     {
@@ -30,12 +33,26 @@ public class MainFrame extends javax.swing.JFrame
         setLocationRelativeTo(null);
         setTitle("Practica 1: Traductor");
         
+        grafo = new Grafo();
+        lienzo = new Lienzo(grafo);
+        
+        System.out.println("lyPane specs:");
+        System.out.println("getX():"+lyPane.getX());
+        System.out.println("getY()"+lyPane.getY());
+        System.out.println("Width:"+lyPane.getWidth());
+        System.out.println("Height:"+lyPane.getHeight());
+        System.out.println("Size()Height:"+lyPane.getSize().height);
+        System.out.println("Size()Width:"+lyPane.getSize().width);
+        //-330 415 368
+        lienzo.setBounds(12, lyPane.getY()+20, lyPane.getWidth()-25, lyPane.getHeight()-40);
+        lyPane.add(lienzo, new Integer(0));
+        
         selectorDeArchivo = new JFileChooser();
         selectorDeArchivo.setFileFilter(new FileNameExtensionFilter("Archivos de Texto", "txt"));
         selectorDeArchivo.setMultiSelectionEnabled(false);
         
-        directorioRaiz = new File("src/Raiz");
-        directorioRaiz.mkdirs();
+        //directorioRaiz = new File("src/Raiz");
+        //directorioRaiz.mkdirs();
         
         loggerEventID = 0;
         
@@ -50,12 +67,12 @@ public class MainFrame extends javax.swing.JFrame
 
         jScrollPane1 = new javax.swing.JScrollPane();
         txtEditor = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
         tbPaneActividad = new javax.swing.JTabbedPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtErrores = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtLogger = new javax.swing.JTextArea();
+        lyPane = new javax.swing.JLayeredPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mArchivo = new javax.swing.JMenu();
         mItemNuevo = new javax.swing.JMenuItem();
@@ -78,19 +95,6 @@ public class MainFrame extends javax.swing.JFrame
         txtEditor.setRows(5);
         jScrollPane1.setViewportView(txtEditor);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Interpretación", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         jScrollPane2.setBorder(null);
 
         txtErrores.setEditable(false);
@@ -106,6 +110,19 @@ public class MainFrame extends javax.swing.JFrame
         jScrollPane3.setViewportView(txtLogger);
 
         tbPaneActividad.addTab("Logger", jScrollPane3);
+
+        lyPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Interpretacion", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
+
+        javax.swing.GroupLayout lyPaneLayout = new javax.swing.GroupLayout(lyPane);
+        lyPane.setLayout(lyPaneLayout);
+        lyPaneLayout.setHorizontalGroup(
+            lyPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+        lyPaneLayout.setVerticalGroup(
+            lyPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         mArchivo.setText("Archivo");
 
@@ -159,6 +176,11 @@ public class MainFrame extends javax.swing.JFrame
 
         mItemVerificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/verify.png"))); // NOI18N
         mItemVerificar.setText("Verificar");
+        mItemVerificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mItemVerificarActionPerformed(evt);
+            }
+        });
         mEjecutar.add(mItemVerificar);
 
         jMenuBar1.add(mEjecutar);
@@ -196,8 +218,8 @@ public class MainFrame extends javax.swing.JFrame
                     .addComponent(tbPaneActividad)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lyPane)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -205,9 +227,9 @@ public class MainFrame extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                    .addComponent(lyPane))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(tbPaneActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7))
         );
@@ -281,6 +303,7 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItemNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemNuevoActionPerformed
         
+        grafo.limpiar(lienzo);
         txtEditor.setText("");
         txtLogger.append((++loggerEventID)+".- Archivo nuevo creado\n");
         txtErrores.setText("");
@@ -315,9 +338,16 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItemInterpretarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemInterpretarActionPerformed
         
-        
+        grafo.agregarCara(300, 50, 30, "Luis", Cara.neutral);
+        grafo.agregarCara(50, 90, 50, "Ricky", Cara.feliz);
+        grafo.agregarCara(200, 200, 100, "Charly", Cara.feliz);
+        lienzo.repaint();
         
     }//GEN-LAST:event_mItemInterpretarActionPerformed
+
+    private void mItemVerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemVerificarActionPerformed
+        
+    }//GEN-LAST:event_mItemVerificarActionPerformed
 
     private void errorArchivo()
     {
@@ -362,10 +392,10 @@ public class MainFrame extends javax.swing.JFrame
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLayeredPane lyPane;
     private javax.swing.JMenu mArchivo;
     private javax.swing.JMenu mAyuda;
     private javax.swing.JMenu mEjecutar;
