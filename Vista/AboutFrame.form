@@ -100,7 +100,7 @@
               <Font name="Tahoma" size="14" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Ricardo Pajarito"/>
+            <Property name="text" type="java.lang.String" value="Jose R. Pajarito Chapuli"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
@@ -118,7 +118,7 @@
               <Font name="Tahoma" size="14" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Uri Leal"/>
+            <Property name="text" type="java.lang.String" value="Uri Y. Leal Cortes"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
@@ -127,7 +127,7 @@
               <Font name="Tahoma" size="14" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Luis "/>
+            <Property name="text" type="java.lang.String" value="Luis E. Parras de la Rosa"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
@@ -136,7 +136,7 @@
               <Font name="Tahoma" size="14" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Carlos Tirado"/>
+            <Property name="text" type="java.lang.String" value="Carlos Tirado Martinez"/>
           </Properties>
         </Component>
       </SubComponents>

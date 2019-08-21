@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainFrame extends javax.swing.JFrame
@@ -31,20 +32,18 @@ public class MainFrame extends javax.swing.JFrame
         initComponents();
         
         setLocationRelativeTo(null);
-        setTitle("Practica 1: Traductor");
+        setTitle("Traductor");
         
         grafo = new Grafo();
         lienzo = new Lienzo(grafo);
         
-        System.out.println("lyPane specs:");
-        System.out.println("getX():"+lyPane.getX());
-        System.out.println("getY()"+lyPane.getY());
-        System.out.println("Width:"+lyPane.getWidth());
-        System.out.println("Height:"+lyPane.getHeight());
-        System.out.println("Size()Height:"+lyPane.getSize().height);
-        System.out.println("Size()Width:"+lyPane.getSize().width);
-        //-330 415 368
         lienzo.setBounds(12, lyPane.getY()+20, lyPane.getWidth()-25, lyPane.getHeight()-40);
+        grafo.setBounds(lienzo.getBounds());
+        
+        System.out.println("--Lienzo BOUNDS--");
+        System.out.println("Height:"+lienzo.getBounds().height);
+        System.out.println("Width:"+lienzo.getBounds().width);
+        
         lyPane.add(lienzo, new Integer(0));
         
         selectorDeArchivo = new JFileChooser();
@@ -250,7 +249,18 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItemGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemGuardarActionPerformed
         
-        guardar(new File("C:/ArchivoNuevo.txt"));
+        if(!txtEditor.getText().trim().isEmpty())
+        {
+            guardar(new File("C:/ArchivoNuevo.txt"));
+        }
+        
+        else
+        {
+            JOptionPane.showMessageDialog(null,
+                                          "El archivo a guardar está vacio",
+                                          "Error de Archivo", JOptionPane.ERROR_MESSAGE);
+            txtLogger.append((++loggerEventID)+".- Archivo no guardado\n");
+        }
         
     }//GEN-LAST:event_mItemGuardarActionPerformed
 
@@ -338,9 +348,10 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItemInterpretarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemInterpretarActionPerformed
         
-        grafo.agregarCara(300, 50, 30, "Luis", Cara.neutral);
-        grafo.agregarCara(50, 90, 50, "Ricky", Cara.feliz);
-        grafo.agregarCara(200, 200, 100, "Charly", Cara.feliz);
+        System.out.println("R1:"+grafo.agregarCara(300, 50, 40, "Luis", Cara.feliz));
+        System.out.println("R2:"+grafo.agregarCara(40, 60, 30, "Ricky", Cara.neutral));
+        System.out.println("R3:"+grafo.agregarCara(200, 200, 165, "Charly", Cara.triste));
+        System.out.println("R4:"+grafo.agregarCara(315, 300, 50, "Mark", Cara.enojada));
         lienzo.repaint();
         
     }//GEN-LAST:event_mItemInterpretarActionPerformed
@@ -389,6 +400,8 @@ public class MainFrame extends javax.swing.JFrame
             catch (IOException x) { errorArchivo(); }
         }
     }
+    
+    public JTextArea getTxtError(){ return txtErrores; }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;

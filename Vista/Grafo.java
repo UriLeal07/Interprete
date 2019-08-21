@@ -8,17 +8,56 @@ import java.util.*;
 public class Grafo
 {
     private final ArrayList <Cara> caras;
+    private int width;
+    private int height;
     
     public Grafo()
     {
+        width = 0;
+        height = 0;
         caras = new ArrayList <>();
     }
     
-    public void agregarCara(int x, int y, int radio, String nombre, int modo)
+    public int agregarCara(int x, int y, int radio, String nombre, int modo)
     {
         Cara c = new Cara(x,y,radio,nombre,modo);
-        //c.getCara().
-	caras.add(c);
+        caras.add(c);
+        
+        // Si la cara es muy chica para visualizarse
+        if(radio < 15)
+            return -1;
+        
+        // Si se sale del marco
+        if( ((x-radio) < 0) || ((y-radio) < 0) || ((x+radio) > width) || ((y+radio) > height) )
+            return -2;
+        
+        // Verifica si no existe overlapping entre caras
+        if(caras.size() > 1)
+        {
+            for(Cara v: caras)
+            {
+                // Evitamos que la cara nueva se verifique asi misma
+                if(!v.equals(c))
+                {
+                    if(testColision(c.getCara(),v.getCara()))
+                        return -3;
+                }
+            }
+        }
+        
+        return 0;
+    }
+    
+    public boolean eliminarCara(String name)
+    {
+        for(Cara c : caras)
+            if(c.getNombre().equals(name))
+            {
+                caras.remove(c);
+                return true;
+            }
+        
+        return false;
     }
     
     public String mostarCaras()
@@ -74,5 +113,28 @@ public class Grafo
         return -1;
     }
     
+    public boolean testColision(Rectangle2D a, Rectangle2D b)
+    {
+        if((b.getMaxY() < a.getMinY()) || (b.getMinY() > a.getMaxY()))
+            return false;
+        
+        if((b.getMaxX() < a.getMinX()) || (b.getMinX() > a.getMaxX()))
+            return false;
+        
+        return true;
+    }
+    
+    private boolean testColision(Shape shapeA, Shape shapeB)
+    {
+        Area areaA = new Area(shapeA);
+        Area areaB = new Area(shapeB);
+        
+        return (areaA.intersects(areaB.getBounds2D()));
+     }
+    
     public ArrayList <Cara> getLista() { return caras; }
+    
+    public void setBounds(Rectangle r){ height = r.height; width = r.width; }
+    public void setHeight(int height){ this.height = height; }
+    public void setWidth(int width){ this.width = width; }
 }
