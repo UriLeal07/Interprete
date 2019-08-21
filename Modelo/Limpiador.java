@@ -1,4 +1,4 @@
-﻿package Modelo;
+package pseudointerprete;
 
 import java.util.ArrayList;
 
@@ -45,8 +45,8 @@ public class Limpiador {
         }
         
         System.out.println("\n\n == CADENAS SIN ESPACIOS EXTRA (solo uno) ==");
-        for (int i = 0; i < cads.length; i++) {
-            System.out.println(cads[i]);
+        for (String cad : cads) {
+            System.out.println(cad);
         }
         
         // se eliminan espacios dentro de paréntesis, siempre y cuando estén en la misma línea
@@ -72,8 +72,8 @@ public class Limpiador {
         }
         
         System.out.println("\n\n == CADENAS SIN ESPACIOS (solo dentro de los paréntesis) ==");
-        for (int i = 0; i < cads.length; i++) {
-            System.out.println(cads[i]);
+        for (String cad : cads) {
+            System.out.println(cad);
         }
         
         // se eliminan espacios entre el nombre de la función y los paréntesis, siempre y cuando estén en la misma línea
@@ -120,3 +120,4 @@ public class Limpiador {
         return nuevaCad;
     }
 }
+

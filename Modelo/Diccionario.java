@@ -1,4 +1,4 @@
-﻿package Modelo;
+package pseudointerprete;
 
 import java.util.ArrayList;
 
@@ -44,6 +44,10 @@ public class Diccionario {
         palabras.add(aux);
         aux = new PalabraReservada(12, "", "número");
         palabras.add(aux);
+        aux = new PalabraReservada(13, "", "parámetro no válido");
+        palabras.add(aux);
+        aux = new PalabraReservada(14, "", "identificador no válido");
+        palabras.add(aux);
     }
     
     // Método que se encarga de buscar una palabra dentro del diccionario.
@@ -63,7 +67,22 @@ public class Diccionario {
             }
             i++;
         }
-        
         return tipo;
+    }
+    public String obtenerEtiqueta(int tipo){
+        PalabraReservada aux;
+        String etiqueta="";
+        boolean ban = false;
+        int i = 0;
+        
+        while (!ban && i < palabras.size()) {
+            aux = palabras.get(i);
+            if (aux.getTipo() == tipo) {
+                etiqueta = aux.getEtiqueta();
+                ban = true;
+            }
+            i++;
+        }
+        return etiqueta;
     }
 }

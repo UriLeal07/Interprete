@@ -1,4 +1,4 @@
-﻿package Modelo;
+package pseudointerprete;
 
 // Clase Token: define la estructura de un token.
 //              Un token nos ayuda a identificar cada una de las palabras por su tipo,
@@ -15,6 +15,9 @@ public class Token {
         this.tipo = tipo;
         this.valor = valor;
         this.linea = linea;
+    }
+    
+    public Token() {
     }
 
     public int getTipo() {
@@ -41,3 +44,4 @@ public class Token {
         this.linea = linea;
     }
 }
+

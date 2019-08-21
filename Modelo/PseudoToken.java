@@ -1,6 +1,6 @@
-﻿package Modelo;
+package pseudointerprete;
 
-// Clase PseudoToken: define la estructura de un pseudotoken.
+// Clase PseudoToken: clase que define la estructura de un pseudotoken.
 //                    Un pseudotoken es simplemente una estructura <valor, línea>
 //                    que ayuda a separar cada palabra para un análisis sencillo.
 public class PseudoToken {
@@ -30,3 +30,4 @@ public class PseudoToken {
         this.linea = linea;
     } 
 }
+
