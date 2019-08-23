@@ -23,7 +23,7 @@ public class MainFrame extends javax.swing.JFrame
     //private final File directorioRaiz;
     private long loggerEventID;
     private AboutFrame frmAbout;
-    private Interprete inter;
+    private Interprete interprete;
     private Grafo grafo;
     private Lienzo lienzo;
     
@@ -56,7 +56,7 @@ public class MainFrame extends javax.swing.JFrame
         loggerEventID = 0;
         
         frmAbout = null;
-        inter = new Interprete(this);
+        interprete = new Interprete(this);
     }
     
     
@@ -348,10 +348,22 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItemInterpretarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemInterpretarActionPerformed
         
-        System.out.println("R1:"+grafo.agregarCara(300, 50, 40, "Luis", Cara.feliz));
-        System.out.println("R2:"+grafo.agregarCara(40, 60, 30, "Ricky", Cara.neutral));
-        System.out.println("R3:"+grafo.agregarCara(200, 200, 165, "Charly", Cara.triste));
-        System.out.println("R4:"+grafo.agregarCara(315, 300, 50, "Mark", Cara.enojada));
+        grafo.reset();
+        
+        if(interprete.interpretar(txtEditor.getText()))
+        {
+            JOptionPane.showMessageDialog(null,
+                    "El codigo contiene errores",
+                    "Error de Traduccion", JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null,
+                    "Codigo sin errores",
+                    "Traduccion lista", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+        txtErrores.setText(Interprete.errores);
         lienzo.repaint();
         
     }//GEN-LAST:event_mItemInterpretarActionPerformed
@@ -403,6 +415,8 @@ public class MainFrame extends javax.swing.JFrame
     
     public JTextArea getTxtError(){ return txtErrores; }
     
+    public Grafo getGrafo() {return grafo;}
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;

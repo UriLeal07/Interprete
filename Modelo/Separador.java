@@ -1,4 +1,4 @@
-package pseudointerprete;
+package Modelo;
 
 import java.util.ArrayList;
 

@@ -1,13 +1,16 @@
-package pseudointerprete;
+package Modelo;
 
+import Controlador.Interprete;
 import java.util.ArrayList;
 
 // Clase Traductor: se encarga de hacer la traducción de las funciones.
 public class Traductor {
-    public int traducir(ArrayList<Token> instruccion) {
+    public int traducir(ArrayList<Token> instruccion, Interprete interprete) {
         String nombre;
         int coordX, coordY, radio, modo, nseg;
         int tipo = instruccion.get(0).getTipo();
+        int res = 0;
+        
         switch (tipo) {
             case 0:
                 // inicio
@@ -34,7 +37,7 @@ public class Traductor {
                 System.out.println("Creando cara en (" + coordX + ", " + coordY + ") con radio = " + radio + " con "
                         + "nombre " + nombre + " y en modo " + instruccion.get(10).getValor());
                 
-                // llamar función
+                res = interprete.crearCara(coordX, coordY, radio, nombre, modo);
                 
             break;
             case 4:
@@ -68,7 +71,8 @@ public class Traductor {
                 System.out.println("Fin del programa");
             break;
         }
-        return 1;
+        
+        return res;
     }
 }
 

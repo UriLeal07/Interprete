@@ -1,4 +1,4 @@
-package pseudointerprete;
+package Modelo;
 
 // Clase PseudoToken: clase que define la estructura de un pseudotoken.
 //                    Un pseudotoken es simplemente una estructura <valor, línea>

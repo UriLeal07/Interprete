@@ -1,4 +1,4 @@
-package pseudointerprete;
+package Modelo;
 
 // Clase Token: define la estructura de un token.
 //              Un token nos ayuda a identificar cada una de las palabras por su tipo,

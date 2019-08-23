@@ -1,4 +1,4 @@
-package pseudointerprete;
+package Modelo;
 
 public class Regla {
     // identificador de la regla.

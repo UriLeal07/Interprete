@@ -1,11 +1,11 @@
-package pseudointerprete;
+package Modelo;
 
 import java.util.ArrayList;
 
 // Clase Limpiador: contiene el método que se encarga de limpiar el código de espacios, saltos de línea y tabuladores.
 public class Limpiador {
     // Lista que contiene el número de línea de cada palabra.
-    ArrayList<Integer> posiciones;
+    public ArrayList<Integer> posiciones;
     
     public Limpiador() {
         posiciones = new ArrayList<>();
@@ -119,5 +119,11 @@ public class Limpiador {
         
         return nuevaCad;
     }
+
+    public ArrayList<Integer> getPosiciones() {
+        return posiciones;
+    }
+    
+    
 }
 

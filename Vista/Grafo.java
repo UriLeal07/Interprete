@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Grafo
 {
-    private final ArrayList <Cara> caras;
+    private ArrayList <Cara> caras;
     private int width;
     private int height;
     
@@ -21,7 +21,6 @@ public class Grafo
     public int agregarCara(int x, int y, int radio, String nombre, int modo)
     {
         Cara c = new Cara(x,y,radio,nombre,modo);
-        caras.add(c);
         
         // Si la cara es muy chica para visualizarse
         if(radio < 15)
@@ -32,18 +31,20 @@ public class Grafo
             return -2;
         
         // Verifica si no existe overlapping entre caras
-        if(caras.size() > 1)
+        if(!caras.isEmpty())
         {
             for(Cara v: caras)
             {
                 // Evitamos que la cara nueva se verifique asi misma
-                if(!v.equals(c))
-                {
+                //if(!v.equals(c))
+                //{
                     if(testColision(c.getCara(),v.getCara()))
                         return -3;
-                }
+                //}
             }
         }
+        
+        caras.add(c);        
         
         return 0;
     }
@@ -130,7 +131,12 @@ public class Grafo
         Area areaB = new Area(shapeB);
         
         return (areaA.intersects(areaB.getBounds2D()));
-     }
+    }
+    
+    public void reset()
+    {
+        caras = new ArrayList <>();
+    }
     
     public ArrayList <Cara> getLista() { return caras; }
     

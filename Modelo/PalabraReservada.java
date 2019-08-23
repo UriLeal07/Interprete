@@ -1,4 +1,4 @@
-package pseudointerprete;
+package Modelo;
 
 // Clase PalabraReservada: define la estructura de una palabra reservada.
 public class PalabraReservada {
