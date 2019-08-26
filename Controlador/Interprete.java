@@ -1,39 +1,23 @@
 package Controlador;
 
 import Vista.MainFrame;
-import java.awt.Graphics;
 import Modelo.Limpiador;
 import Modelo.Analizadores;
 import Modelo.Diccionario;
 import Modelo.PseudoToken;
-import Modelo.Regla;
 import Modelo.Separador;
 import Modelo.Sintaxis;
 import Modelo.Token;
 import java.util.ArrayList;
 
-public class Interprete
+public class Interprete extends Thread
 {
-    private MainFrame mFrame;
-    //private Limpiador limpiador;
-   // private Analizadores analizadores;
-    //private ArrayList<PseudoToken> pseudoTokens;
-    //private Separador separador;
-    //private ArrayList<Token> tokens;
-    //private Diccionario diccionario;
-    //private Sintaxis reglas;
+    private final MainFrame mFrame;
     public static String errores = "";
     
     public Interprete(MainFrame mFrame)
     {
         this.mFrame = mFrame;
-        //limpiador = new Limpiador();
-        //analizadores = new Analizadores(this);
-        //pseudoTokens = new ArrayList<>();
-        //separador = new Separador();
-        //tokens = new ArrayList<>();
-        //diccionario = new Diccionario();
-        //reglas = new Sintaxis();
     }
     
     public boolean interpretar(String code)
@@ -42,15 +26,13 @@ public class Interprete
         
         Limpiador limpiador = new Limpiador();
         Separador separador = new Separador();
-        ArrayList<PseudoToken> pseudoTokens = new ArrayList<>();
-        ArrayList<Token> tokens = new ArrayList<>();
         Analizadores analizadores = new Analizadores(this);
         Diccionario diccionario = new Diccionario();
         Sintaxis reglas = new Sintaxis();
         
         String aux = limpiador.limpiar(code);
-        pseudoTokens = separador.separar(aux, limpiador.getPosiciones());
-        tokens = analizadores.asignarTokens(pseudoTokens, diccionario);
+        ArrayList<PseudoToken> pseudoTokens = separador.separar(aux, limpiador.getPosiciones());
+        ArrayList<Token> tokens = analizadores.asignarTokens(pseudoTokens, diccionario);
         
         return analizadores.compararConReglas(tokens, reglas, diccionario);
     }
@@ -60,10 +42,40 @@ public class Interprete
         return mFrame.getGrafo().agregarCara(x, y, radio, nombre, modo);
     }
     
+    public int cambiarModo(String name, int modo)
+    {
+        int res = mFrame.getGrafo().cambiarModoCara(name, modo);
+        
+        // Si se encontro y cambio modo de cara
+        if(res == 0)
+            mFrame.refresh();
+        
+        return res;
+    }
+    
+    public int eliminarCara(String nombre)
+    {
+        return mFrame.getGrafo().eliminarCara(nombre);
+    }
+    
+    public int dormir(int segs)
+    {
+        if(segs < 0 || segs > 30)
+            return -5;
+        
+        try
+        {
+            sleep((segs*1000));
+        }
+        catch(InterruptedException e) { System.out.println("Thread error sleep"); }
+        
+        return 0;
+    }
+    
+    public void refresh() { mFrame.refresh(); }
+    
     public void checkError()
     {
         mFrame.getTxtError().setText(errores);
     }
-    
-    
 }

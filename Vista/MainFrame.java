@@ -5,7 +5,6 @@
 package Vista;
 
 import Controlador.Interprete;
-import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -353,14 +352,16 @@ public class MainFrame extends javax.swing.JFrame
         if(interprete.interpretar(txtEditor.getText()))
         {
             JOptionPane.showMessageDialog(null,
-                    "El codigo contiene errores",
+                    "El código contiene errores",
                     "Error de Traduccion", JOptionPane.ERROR_MESSAGE);
+            txtLogger.append((++loggerEventID)+".- Traduccion terminada exitosamente\n");
         }
         else
         {
             JOptionPane.showMessageDialog(null,
-                    "Codigo sin errores",
+                    "Traducción terminada sin errores",
                     "Traduccion lista", JOptionPane.INFORMATION_MESSAGE);
+            txtLogger.append((++loggerEventID)+".- Traduccion terminada con errores\n");
         }
         
         txtErrores.setText(Interprete.errores);
@@ -414,6 +415,8 @@ public class MainFrame extends javax.swing.JFrame
     }
     
     public JTextArea getTxtError(){ return txtErrores; }
+    
+    public void refresh(){ lienzo.repaint(); }
     
     public Grafo getGrafo() {return grafo;}
 

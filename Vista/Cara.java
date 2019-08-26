@@ -1,9 +1,7 @@
 package Vista;
 
 import java.awt.*;
-import java.awt.font.FontRenderContext;
 import java.awt.geom.*;
-import javax.swing.ImageIcon;
 
 public class Cara
 {
@@ -26,7 +24,6 @@ public class Cara
     private int radio;
     private BasicStroke stroke;
     private QuadCurve2D q;
-    private final int separacion = 5;
     
     public Cara(int x, int y, int radio, String nombre, int modo)
     {
@@ -123,10 +120,10 @@ public class Cara
     public Ellipse2D getCara() { return cara; }
     public String getNombre() { return nombre; }
     public Point2D getOrigen() { return origen; }
-    public Color getColor() { return color; }
     public int getRadio() { return radio; }
+    public int getModo() { return modo; }
     
     public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setColor(Color c) { color = c; }
     public void setCirculo(Ellipse2D cara) { this.cara = cara; }
+    public void setModo(int modo) { this.modo = modo; }
 }

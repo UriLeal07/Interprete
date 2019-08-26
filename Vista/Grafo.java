@@ -2,7 +2,6 @@ package Vista;
 
 import java.awt.*;
 import java.awt.geom.*;
-import javax.swing.*;
 import java.util.*;
 
 public class Grafo
@@ -40,6 +39,10 @@ public class Grafo
                 //{
                     if(testColision(c.getCara(),v.getCara()))
                         return -3;
+                    
+                    // Si el nombre de la cara ya existe
+                    if(v.getNombre().equals(nombre))
+                        return -7;
                 //}
             }
         }
@@ -49,16 +52,28 @@ public class Grafo
         return 0;
     }
     
-    public boolean eliminarCara(String name)
+    public int cambiarModoCara(String name, int modo)
+    {
+        for(Cara c : caras)
+            if(c.getNombre().equals(name))
+            {
+                c.setModo(modo);
+                return 0;
+            }
+        
+        return -6;
+    }
+    
+    public int eliminarCara(String name)
     {
         for(Cara c : caras)
             if(c.getNombre().equals(name))
             {
                 caras.remove(c);
-                return true;
+                return 0;
             }
         
-        return false;
+        return -4;
     }
     
     public String mostarCaras()
@@ -135,7 +150,8 @@ public class Grafo
     
     public void reset()
     {
-        caras = new ArrayList <>();
+        caras.clear();
+        Cara.nCaras = 0;
     }
     
     public ArrayList <Cara> getLista() { return caras; }

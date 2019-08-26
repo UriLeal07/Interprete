@@ -4,18 +4,22 @@ import Controlador.Interprete;
 import java.util.ArrayList;
 
 // Clase Traductor: se encarga de hacer la traducción de las funciones.
-public class Traductor {
-    public int traducir(ArrayList<Token> instruccion, Interprete interprete) {
+public class Traductor
+{
+    public int traducir(ArrayList<Token> instruccion, Interprete interprete)
+    {
         String nombre;
         int coordX, coordY, radio, modo, nseg;
         int tipo = instruccion.get(0).getTipo();
         int res = 0;
         
-        switch (tipo) {
+        switch (tipo)
+        {
             case 0:
                 // inicio
                 System.out.println("Inicio del programa");
             break;
+            
             case 3:
                 //dibujar cara
                 coordX = Integer.parseInt(instruccion.get(2).getValor());
@@ -38,18 +42,25 @@ public class Traductor {
                         + "nombre " + nombre + " y en modo " + instruccion.get(10).getValor());
                 
                 res = interprete.crearCara(coordX, coordY, radio, nombre, modo);
+                interprete.refresh();
                 
             break;
+                
             case 4:
                 // eliminar cara
                 nombre = instruccion.get(2).getValor();
+                res = interprete.eliminarCara(nombre);
+                interprete.refresh();
                 System.out.println("Eliminando cara con nombre " + nombre);
             break;
+                
             case 5:
                 // dormir
                 nseg = Integer.parseInt(instruccion.get(2).getValor());
+                res = interprete.dormir(nseg);
                 System.out.println("Durmiendo programa " + nseg + " segundos");
             break;
+                
             case 6:
                 // cambiar modo
                 nombre = instruccion.get(2).getValor();
@@ -64,12 +75,20 @@ public class Traductor {
                 } else {
                     modo = 4;
                 }
+                
+                res = interprete.cambiarModo(nombre, modo);
+                interprete.refresh();
                 System.out.println("Cambiando modo de cara con nombre " + nombre + " a modo " + instruccion.get(4).getValor());
+            
             break;
+                
             case 2:
                 // fin
                 System.out.println("Fin del programa");
             break;
+            
+            default:
+                System.out.println("Default");
         }
         
         return res;

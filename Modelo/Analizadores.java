@@ -113,33 +113,62 @@ public class Analizadores
                         }
                     }
                     
-                    if (!banError) {
+                    if (!banError)
+                    {
                         // llamar a función que ejecuta la instrucción
                         int errorNo = trad.traducir(instruccion, interprete);
-                        if (errorNo < 0) {
-                            
+                        
+                        if (errorNo < 0)
+                        {
                             banError = true;
                             i = tokens.size();
                             contFin++;
                             
                             switch(errorNo)
                             {
+                                // Radio de cara demasiado chico
                                 case -1:
                                     error = "Funcion DibujarCara: La cara " + instruccion.get(8).getValor() + " es muy chica para visualizarse. Linea: " + t.getLinea();
                                 break;
-                                    
+                                
+                                // Cara fuera de los bordes del lienzo
                                 case -2:
                                     
                                     error = "Funcion DibujarCara: Las coordenadas de la cara " + instruccion.get(8).getValor() + " estan fuera del marco de dibujo. Linea: " + t.getLinea();
                                 break;
-                                    
-                                default:
+                                   
+                                // Cara sobrepuesta con otra
+                                case -3:
                                     
                                     error = "Funcion DibujarCara: La cara " + instruccion.get(8).getValor() + " se sobrepone con alguna otra. Linea: " + t.getLinea(); 
+                            
+                                // No existe la cara ha eliminar
+                                case -4:
+                                    
+                                    error = "Funcion EliminarCara: La cara " + instruccion.get(8).getValor() + " no existe. Linea: " + t.getLinea(); 
+                                
+                                // Sleep fuera de rango 0-30
+                                case -5:
+                                    
+                                    error = "Funcion Dormir fuera del rango permitido [ 0-30 segs. ]. Linea: " + t.getLinea();
+                                
+                                // No existe la cara que se desea cambiar de modo
+                                case -6:
+                                    
+                                    error = "Funcion CambiarModo: La cara " + instruccion.get(8).getValor() + " no existe. Linea: " + t.getLinea(); 
+                                
+                                // Ya existe la cara que se pretende crear
+                                case -7:
+                                    
+                                    error = "Funcion CrearCara: La cara " + instruccion.get(8).getValor() + " ya existe. Linea: " + t.getLinea();                                     
+                                    
+                                default:
+                                    System.out.println("Error default");
                             }
                             
                             Interprete.errores += error;
                         }
+                        
                         instruccion = new ArrayList<>();
                     }
                     
