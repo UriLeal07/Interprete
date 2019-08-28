@@ -9,11 +9,14 @@ import Modelo.Separador;
 import Modelo.Sintaxis;
 import Modelo.Token;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Interprete extends Thread
+public class Interprete
 {
     private final MainFrame mFrame;
     public static String errores = "";
+    public static Timer timer;
     
     public Interprete(MainFrame mFrame)
     {
@@ -63,11 +66,9 @@ public class Interprete extends Thread
         if(segs < 0 || segs > 30)
             return -5;
         
-        try
-        {
-            sleep((segs*1000));
-        }
-        catch(InterruptedException e) { System.out.println("Thread error sleep"); }
+        TimerTask timerTask = new Temporizador();
+        timer = new Timer(true);
+        timer.schedule(timerTask,(segs*1000));
         
         return 0;
     }

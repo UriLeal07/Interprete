@@ -11,20 +11,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainFrame extends javax.swing.JFrame
 {
     private final JFileChooser selectorDeArchivo;
-    //private final File directorioRaiz;
+    private File dirActual;
     private long loggerEventID;
     private AboutFrame frmAbout;
     private Interprete interprete;
     private Grafo grafo;
     private Lienzo lienzo;
+    private boolean guardado;
     
     public MainFrame()
     {
@@ -39,31 +42,26 @@ public class MainFrame extends javax.swing.JFrame
         lienzo.setBounds(12, lyPane.getY()+20, lyPane.getWidth()-25, lyPane.getHeight()-40);
         grafo.setBounds(lienzo.getBounds());
         
-        System.out.println("--Lienzo BOUNDS--");
-        System.out.println("Height:"+lienzo.getBounds().height);
-        System.out.println("Width:"+lienzo.getBounds().width);
-        
         lyPane.add(lienzo, new Integer(0));
         
         selectorDeArchivo = new JFileChooser();
         selectorDeArchivo.setFileFilter(new FileNameExtensionFilter("Archivos de Texto", "txt"));
         selectorDeArchivo.setMultiSelectionEnabled(false);
         
-        //directorioRaiz = new File("src/Raiz");
-        //directorioRaiz.mkdirs();
+        dirActual = null;
         
         loggerEventID = 0;
         
         frmAbout = null;
         interprete = new Interprete(this);
+        guardado = false;
     }
-    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        panelEditor = new javax.swing.JScrollPane();
         txtEditor = new javax.swing.JTextArea();
         tbPaneActividad = new javax.swing.JTabbedPane();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -79,7 +77,6 @@ public class MainFrame extends javax.swing.JFrame
         mItGuardarComo = new javax.swing.JMenuItem();
         mEjecutar = new javax.swing.JMenu();
         mItemInterpretar = new javax.swing.JMenuItem();
-        mItemVerificar = new javax.swing.JMenuItem();
         mAyuda = new javax.swing.JMenu();
         mItemAcerca = new javax.swing.JMenuItem();
         mSalir = new javax.swing.JMenu();
@@ -87,11 +84,11 @@ public class MainFrame extends javax.swing.JFrame
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Editor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
+        panelEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Editor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
 
         txtEditor.setColumns(20);
         txtEditor.setRows(5);
-        jScrollPane1.setViewportView(txtEditor);
+        panelEditor.setViewportView(txtEditor);
 
         jScrollPane2.setBorder(null);
 
@@ -124,6 +121,7 @@ public class MainFrame extends javax.swing.JFrame
 
         mArchivo.setText("Archivo");
 
+        mItemNuevo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         mItemNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/new.png"))); // NOI18N
         mItemNuevo.setText("Nuevo");
         mItemNuevo.addActionListener(new java.awt.event.ActionListener() {
@@ -133,6 +131,7 @@ public class MainFrame extends javax.swing.JFrame
         });
         mArchivo.add(mItemNuevo);
 
+        mItemAbrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         mItemAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/open.png"))); // NOI18N
         mItemAbrir.setText("Abrir");
         mItemAbrir.addActionListener(new java.awt.event.ActionListener() {
@@ -142,6 +141,7 @@ public class MainFrame extends javax.swing.JFrame
         });
         mArchivo.add(mItemAbrir);
 
+        mItemGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         mItemGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/save.png"))); // NOI18N
         mItemGuardar.setText("Guardar");
         mItemGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -151,6 +151,7 @@ public class MainFrame extends javax.swing.JFrame
         });
         mArchivo.add(mItemGuardar);
 
+        mItGuardarComo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         mItGuardarComo.setText("Guardar como...");
         mItGuardarComo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -163,6 +164,7 @@ public class MainFrame extends javax.swing.JFrame
 
         mEjecutar.setText("Ejecutar");
 
+        mItemInterpretar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
         mItemInterpretar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/interpret.png"))); // NOI18N
         mItemInterpretar.setText("Interpretar");
         mItemInterpretar.addActionListener(new java.awt.event.ActionListener() {
@@ -171,15 +173,6 @@ public class MainFrame extends javax.swing.JFrame
             }
         });
         mEjecutar.add(mItemInterpretar);
-
-        mItemVerificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/verify.png"))); // NOI18N
-        mItemVerificar.setText("Verificar");
-        mItemVerificar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mItemVerificarActionPerformed(evt);
-            }
-        });
-        mEjecutar.add(mItemVerificar);
 
         jMenuBar1.add(mEjecutar);
 
@@ -215,7 +208,7 @@ public class MainFrame extends javax.swing.JFrame
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tbPaneActividad)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelEditor, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lyPane)))
                 .addContainerGap())
@@ -225,7 +218,7 @@ public class MainFrame extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                    .addComponent(panelEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
                     .addComponent(lyPane))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(tbPaneActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -247,18 +240,15 @@ public class MainFrame extends javax.swing.JFrame
     }//GEN-LAST:event_mItemAcercaActionPerformed
 
     private void mItemGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemGuardarActionPerformed
-        
-        if(!txtEditor.getText().trim().isEmpty())
+
+        if(dirActual == null)
         {
-            guardar(new File("C:/ArchivoNuevo.txt"));
+            saveAs();
         }
         
         else
         {
-            JOptionPane.showMessageDialog(null,
-                                          "El archivo a guardar está vacio",
-                                          "Error de Archivo", JOptionPane.ERROR_MESSAGE);
-            txtLogger.append((++loggerEventID)+".- Archivo no guardado\n");
+            save(dirActual);
         }
         
     }//GEN-LAST:event_mItemGuardarActionPerformed
@@ -284,8 +274,13 @@ public class MainFrame extends javax.swing.JFrame
                     while ((line = reader.readLine()) != null)
                         texto += line+"\n";
                     
+                    // Acomodamos el texto en el editor adecuadamente
                     txtEditor.setText(texto.substring(0, texto.length()-1));
-                    //txtEditor.setText(texto);
+                    
+                    dirActual = archivo;
+                    
+                    panelEditor.setBorder(BorderFactory.createTitledBorder("\""+archivo.getName()+"\""));
+                    
                     txtLogger.append((++loggerEventID)+".- Lectura de archivo \""+archivo.getName()+"\"\n");
                     
                     JOptionPane.showMessageDialog(null,
@@ -312,6 +307,8 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItemNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemNuevoActionPerformed
         
+        panelEditor.setBorder(BorderFactory.createTitledBorder("Editor"));
+        dirActual = null;
         grafo.limpiar(lienzo);
         txtEditor.setText("");
         txtLogger.append((++loggerEventID)+".- Archivo nuevo creado\n");
@@ -321,14 +318,58 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItGuardarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItGuardarComoActionPerformed
         
-        if(!txtEditor.getText().trim().isEmpty())
+        saveAs();
+        
+    }//GEN-LAST:event_mItGuardarComoActionPerformed
+
+    private void mItemInterpretarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemInterpretarActionPerformed
+        
+        grafo.reset();
+        
+        if(!isEditorEmpty())
+        {
+            if(interprete.interpretar(txtEditor.getText()))
+            {
+                JOptionPane.showMessageDialog(null,
+                        "El código contiene errores",
+                        "Error de Traduccion", JOptionPane.ERROR_MESSAGE);
+                txtLogger.append((++loggerEventID)+".- Traduccion terminada exitosamente\n");
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null,
+                        "Traducción terminada sin errores",
+                        "Traduccion lista", JOptionPane.INFORMATION_MESSAGE);
+                txtLogger.append((++loggerEventID)+".- Traduccion terminada con errores\n");
+            }
+            
+            txtErrores.setText(Interprete.errores);
+            lienzo.repaint();
+        }
+        
+        else
+        {
+            JOptionPane.showMessageDialog(null,
+                                          "No hay texto a traducir",
+                                          "Error de Archivo", JOptionPane.ERROR_MESSAGE);
+            
+            txtLogger.append((++loggerEventID)+".- Archivo no traducido\n");
+        }
+        
+
+        
+    }//GEN-LAST:event_mItemInterpretarActionPerformed
+
+    private void saveAs()
+    {
+        if(!isEditorEmpty())
         {
             selectorDeArchivo.setDialogType(JFileChooser.SAVE_DIALOG);
             int res = selectorDeArchivo.showSaveDialog(MainFrame.this);
             
             if(res == JFileChooser.APPROVE_OPTION)
             {
-                guardar(selectorDeArchivo.getSelectedFile().getAbsoluteFile());
+                save(selectorDeArchivo.getSelectedFile().getAbsoluteFile());
             }
             
             if(res == JFileChooser.ERROR_OPTION)
@@ -342,37 +383,8 @@ public class MainFrame extends javax.swing.JFrame
                                           "Error de Archivo", JOptionPane.ERROR_MESSAGE);
             txtLogger.append((++loggerEventID)+".- Archivo no guardado\n");
         }
-        
-    }//GEN-LAST:event_mItGuardarComoActionPerformed
-
-    private void mItemInterpretarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemInterpretarActionPerformed
-        
-        grafo.reset();
-        
-        if(interprete.interpretar(txtEditor.getText()))
-        {
-            JOptionPane.showMessageDialog(null,
-                    "El código contiene errores",
-                    "Error de Traduccion", JOptionPane.ERROR_MESSAGE);
-            txtLogger.append((++loggerEventID)+".- Traduccion terminada exitosamente\n");
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null,
-                    "Traducción terminada sin errores",
-                    "Traduccion lista", JOptionPane.INFORMATION_MESSAGE);
-            txtLogger.append((++loggerEventID)+".- Traduccion terminada con errores\n");
-        }
-        
-        txtErrores.setText(Interprete.errores);
-        lienzo.repaint();
-        
-    }//GEN-LAST:event_mItemInterpretarActionPerformed
-
-    private void mItemVerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemVerificarActionPerformed
-        
-    }//GEN-LAST:event_mItemVerificarActionPerformed
-
+    }
+    
     private void errorArchivo()
     {
         txtLogger.append((++loggerEventID)+".- Error de lectura de archivo\n");
@@ -382,7 +394,9 @@ public class MainFrame extends javax.swing.JFrame
                     "Error de Archivo", JOptionPane.ERROR_MESSAGE);
     }
     
-    private void guardar(File archivo)
+    private boolean isEditorEmpty(){ return txtEditor.getText().trim().isEmpty(); }
+    
+    private void save(File archivo)
     {
         if(!archivo.getName().endsWith(".txt"))
         {
@@ -392,7 +406,7 @@ public class MainFrame extends javax.swing.JFrame
                                           "Solo se admiten archivos .txt",
                                           "Error de compatibilidad", JOptionPane.ERROR_MESSAGE);
         }
-                
+        
         else
         {
             try (PrintWriter pw = new PrintWriter(new FileWriter(archivo)))
@@ -403,9 +417,12 @@ public class MainFrame extends javax.swing.JFrame
                     pw.println(result1);
 
                 pw.close();
-                        
+                
+                dirActual = archivo;
+                
+                panelEditor.setBorder(BorderFactory.createTitledBorder("\""+archivo.getName()+"\""));
                 txtLogger.append((++loggerEventID)+".- Archivo \""+archivo.getName()+"\" guardado\n");
-
+                
                 JOptionPane.showMessageDialog(null,
                                               "Archivo guardado exitosamente",
                                               "Operación de Archivo", JOptionPane.INFORMATION_MESSAGE);
@@ -422,7 +439,6 @@ public class MainFrame extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLayeredPane lyPane;
@@ -435,8 +451,8 @@ public class MainFrame extends javax.swing.JFrame
     private javax.swing.JMenuItem mItemGuardar;
     private javax.swing.JMenuItem mItemInterpretar;
     private javax.swing.JMenuItem mItemNuevo;
-    private javax.swing.JMenuItem mItemVerificar;
     private javax.swing.JMenu mSalir;
+    private javax.swing.JScrollPane panelEditor;
     private javax.swing.JTabbedPane tbPaneActividad;
     private javax.swing.JTextArea txtEditor;
     private javax.swing.JTextArea txtErrores;

@@ -145,7 +145,7 @@ public class Analizadores
                                 // No existe la cara ha eliminar
                                 case -4:
                                     
-                                    error = "Funcion EliminarCara: La cara " + instruccion.get(8).getValor() + " no existe. Linea: " + t.getLinea(); 
+                                    error = "Funcion EliminarCara: La cara " + instruccion.get(2).getValor() + " no existe. Linea: " + t.getLinea(); 
                                 
                                 // Sleep fuera de rango 0-30
                                 case -5:
@@ -155,12 +155,12 @@ public class Analizadores
                                 // No existe la cara que se desea cambiar de modo
                                 case -6:
                                     
-                                    error = "Funcion CambiarModo: La cara " + instruccion.get(8).getValor() + " no existe. Linea: " + t.getLinea(); 
+                                    error = "Funcion CambiarModo: La cara " + instruccion.get(2).getValor() + " no existe. Linea: " + t.getLinea(); 
                                 
                                 // Ya existe la cara que se pretende crear
                                 case -7:
                                     
-                                    error = "Funcion CrearCara: La cara " + instruccion.get(8).getValor() + " ya existe. Linea: " + t.getLinea();                                     
+                                    error = "Funcion DibujarCara: La cara " + instruccion.get(2).getValor() + " ya existe. Linea: " + t.getLinea();                                     
                                     
                                 default:
                                     System.out.println("Error default");

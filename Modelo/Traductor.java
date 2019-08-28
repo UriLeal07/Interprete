@@ -42,7 +42,7 @@ public class Traductor
                         + "nombre " + nombre + " y en modo " + instruccion.get(10).getValor());
                 
                 res = interprete.crearCara(coordX, coordY, radio, nombre, modo);
-                interprete.refresh();
+                
                 
             break;
                 
@@ -50,15 +50,17 @@ public class Traductor
                 // eliminar cara
                 nombre = instruccion.get(2).getValor();
                 res = interprete.eliminarCara(nombre);
-                interprete.refresh();
+                
                 System.out.println("Eliminando cara con nombre " + nombre);
             break;
                 
             case 5:
                 // dormir
+                
                 nseg = Integer.parseInt(instruccion.get(2).getValor());
-                res = interprete.dormir(nseg);
                 System.out.println("Durmiendo programa " + nseg + " segundos");
+                res = interprete.dormir(nseg);
+                
             break;
                 
             case 6:
@@ -77,7 +79,6 @@ public class Traductor
                 }
                 
                 res = interprete.cambiarModo(nombre, modo);
-                interprete.refresh();
                 System.out.println("Cambiando modo de cara con nombre " + nombre + " a modo " + instruccion.get(4).getValor());
             
             break;
