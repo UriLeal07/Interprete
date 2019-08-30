@@ -9,14 +9,11 @@ import Modelo.Separador;
 import Modelo.Sintaxis;
 import Modelo.Token;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Interprete
 {
     private final MainFrame mFrame;
     public static String errores = "";
-    public static Timer timer;
     
     public Interprete(MainFrame mFrame)
     {
@@ -29,15 +26,15 @@ public class Interprete
         
         Limpiador limpiador = new Limpiador();
         Separador separador = new Separador();
-        Analizadores analizadores = new Analizadores(this);
-        Diccionario diccionario = new Diccionario();
         Sintaxis reglas = new Sintaxis();
+        Diccionario diccionario = new Diccionario();
+        Analizadores analizadores = new Analizadores(this, reglas, diccionario);
         
         String aux = limpiador.limpiar(code);
         ArrayList<PseudoToken> pseudoTokens = separador.separar(aux, limpiador.getPosiciones());
-        ArrayList<Token> tokens = analizadores.asignarTokens(pseudoTokens, diccionario);
+        analizadores.asignarTokens(pseudoTokens);
         
-        return analizadores.compararConReglas(tokens, reglas, diccionario);
+        return analizadores.compararConReglas();
     }
     
     public int crearCara(int x, int y, int radio, String nombre, int modo)
@@ -63,14 +60,19 @@ public class Interprete
     
     public int dormir(int segs)
     {
-        if(segs < 0 || segs > 30)
-            return -5;
+        /* if(segs < 0 || segs > 30)
+            return -5; */
         
-        TimerTask timerTask = new Temporizador();
-        timer = new Timer(true);
-        timer.schedule(timerTask,(segs*1000));
+        System.out.println("Programa dormido " + segs + " segundos");
         
-        return 0;
+        /* try
+        {
+            sleep((segs*1000));
+        }
+        
+        catch(InterruptedException e) { System.out.println("Thread error sleep"); } */
+        
+        return 0;      
     }
     
     public void refresh() { mFrame.refresh(); }
@@ -79,4 +81,9 @@ public class Interprete
     {
         mFrame.getTxtError().setText(errores);
     }
+    
+    public void setError(String err)
+    {
+        mFrame.getTxtError().setText(err);
+    }    
 }
