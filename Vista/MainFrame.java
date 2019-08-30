@@ -15,7 +15,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
-import javax.swing.border.EtchedBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainFrame extends javax.swing.JFrame
@@ -24,10 +23,9 @@ public class MainFrame extends javax.swing.JFrame
     private File dirActual;
     private long loggerEventID;
     private AboutFrame frmAbout;
-    private Interprete interprete;
-    private Grafo grafo;
-    private Lienzo lienzo;
-    private boolean guardado;
+    private final Interprete interprete;
+    private final Grafo grafo;
+    private final Lienzo lienzo;
     
     public MainFrame()
     {
@@ -54,7 +52,6 @@ public class MainFrame extends javax.swing.JFrame
         
         frmAbout = null;
         interprete = new Interprete(this);
-        guardado = false;
     }
     
     @SuppressWarnings("unchecked")
@@ -68,6 +65,8 @@ public class MainFrame extends javax.swing.JFrame
         txtErrores = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtLogger = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtOutput = new javax.swing.JTextArea();
         lyPane = new javax.swing.JLayeredPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         mArchivo = new javax.swing.JMenu();
@@ -87,6 +86,7 @@ public class MainFrame extends javax.swing.JFrame
         panelEditor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Editor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
 
         txtEditor.setColumns(20);
+        txtEditor.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
         txtEditor.setRows(5);
         panelEditor.setViewportView(txtEditor);
 
@@ -94,25 +94,35 @@ public class MainFrame extends javax.swing.JFrame
 
         txtErrores.setEditable(false);
         txtErrores.setColumns(20);
+        txtErrores.setFont(new java.awt.Font("Consolas", 1, 13)); // NOI18N
         txtErrores.setRows(5);
         jScrollPane2.setViewportView(txtErrores);
 
-        tbPaneActividad.addTab("Errores", jScrollPane2);
+        tbPaneActividad.addTab(" Errores ", new javax.swing.ImageIcon(getClass().getResource("/Icons/error.png")), jScrollPane2); // NOI18N
 
         txtLogger.setEditable(false);
         txtLogger.setColumns(20);
+        txtLogger.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
         txtLogger.setRows(5);
         jScrollPane3.setViewportView(txtLogger);
 
-        tbPaneActividad.addTab("Logger", jScrollPane3);
+        tbPaneActividad.addTab(" Logger ", new javax.swing.ImageIcon(getClass().getResource("/Icons/logger.png")), jScrollPane3); // NOI18N
 
-        lyPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Interpretacion", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
+        txtOutput.setEditable(false);
+        txtOutput.setColumns(20);
+        txtOutput.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
+        txtOutput.setRows(5);
+        jScrollPane1.setViewportView(txtOutput);
+
+        tbPaneActividad.addTab(" Output ", new javax.swing.ImageIcon(getClass().getResource("/Icons/output.png")), jScrollPane1); // NOI18N
+
+        lyPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Interpretación", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
 
         javax.swing.GroupLayout lyPaneLayout = new javax.swing.GroupLayout(lyPane);
         lyPane.setLayout(lyPaneLayout);
         lyPaneLayout.setHorizontalGroup(
             lyPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 412, Short.MAX_VALUE)
+            .addGap(0, 327, Short.MAX_VALUE)
         );
         lyPaneLayout.setVerticalGroup(
             lyPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,13 +284,14 @@ public class MainFrame extends javax.swing.JFrame
                     while ((line = reader.readLine()) != null)
                         texto += line+"\n";
                     
+                    // Guardamos referencia al archivo cargado en programa
+                    dirActual = archivo;
+                    // Ponemos el noombre en el marco del editor
+                    panelEditor.setBorder(BorderFactory.createTitledBorder("\""+archivo.getName()+"\""));
+                    // Limpiamos editores y salida de texto
+                    clearWorkspace();
                     // Acomodamos el texto en el editor adecuadamente
                     txtEditor.setText(texto.substring(0, texto.length()-1));
-                    
-                    dirActual = archivo;
-                    
-                    panelEditor.setBorder(BorderFactory.createTitledBorder("\""+archivo.getName()+"\""));
-                    
                     txtLogger.append((++loggerEventID)+".- Lectura de archivo \""+archivo.getName()+"\"\n");
                     
                     JOptionPane.showMessageDialog(null,
@@ -310,9 +321,8 @@ public class MainFrame extends javax.swing.JFrame
         panelEditor.setBorder(BorderFactory.createTitledBorder("Editor"));
         dirActual = null;
         grafo.limpiar(lienzo);
-        txtEditor.setText("");
+        clearWorkspace();
         txtLogger.append((++loggerEventID)+".- Archivo nuevo creado\n");
-        txtErrores.setText("");
         
     }//GEN-LAST:event_mItemNuevoActionPerformed
 
@@ -324,29 +334,14 @@ public class MainFrame extends javax.swing.JFrame
 
     private void mItemInterpretarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemInterpretarActionPerformed
         
-        grafo.reset();
-        
         if(!isEditorEmpty())
         {
-            if(interprete.interpretar(txtEditor.getText()))
-            {
-                JOptionPane.showMessageDialog(null,
-                        "El código contiene errores",
-                        "Error de Traduccion", JOptionPane.ERROR_MESSAGE);
-                txtLogger.append((++loggerEventID)+".- Traduccion terminada exitosamente\n");
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(null,
-                        "Traducción terminada sin errores",
-                        "Traduccion lista", JOptionPane.INFORMATION_MESSAGE);
-                txtLogger.append((++loggerEventID)+".- Traduccion terminada con errores\n");
-            }
-            
-            txtErrores.setText(Interprete.errores);
-            lienzo.repaint();
+            grafo.reset();
+            txtErrores.setText("");
+            txtOutput.setText("");
+            txtLogger.append((++loggerEventID)+".- Interpretando archivo fuente...\n");
+            interprete.interpretar(txtEditor.getText());
         }
-        
         else
         {
             JOptionPane.showMessageDialog(null,
@@ -355,11 +350,33 @@ public class MainFrame extends javax.swing.JFrame
             
             txtLogger.append((++loggerEventID)+".- Archivo no traducido\n");
         }
-        
-
-        
     }//GEN-LAST:event_mItemInterpretarActionPerformed
 
+    public void finish(boolean err)
+    {
+        if(err)
+        {
+            JOptionPane.showMessageDialog(null,
+                        "Traducción terminada sin errores",
+                        "Traduccion lista", JOptionPane.INFORMATION_MESSAGE);
+            txtLogger.append((++loggerEventID)+".- Traduccion terminada exitosamente\n");
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null,
+                        "El código contiene errores",
+                        "Error de Traduccion", JOptionPane.ERROR_MESSAGE);
+            txtLogger.append((++loggerEventID)+".- Traduccion terminada con errores\n");
+        }
+    }
+    
+    private void clearWorkspace()
+    {
+        txtEditor.setText("");
+        txtErrores.setText("");
+        txtOutput.setText("");
+    }
+    
     private void saveAs()
     {
         if(!isEditorEmpty())
@@ -432,6 +449,7 @@ public class MainFrame extends javax.swing.JFrame
     }
     
     public JTextArea getTxtError(){ return txtErrores; }
+    public JTextArea getTxtOutput(){ return txtOutput; }
     
     public void refresh(){ lienzo.repaint(); }
     
@@ -439,6 +457,7 @@ public class MainFrame extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLayeredPane lyPane;
@@ -457,5 +476,6 @@ public class MainFrame extends javax.swing.JFrame
     private javax.swing.JTextArea txtEditor;
     private javax.swing.JTextArea txtErrores;
     private javax.swing.JTextArea txtLogger;
+    private javax.swing.JTextArea txtOutput;
     // End of variables declaration//GEN-END:variables
 }

@@ -42,7 +42,7 @@ public class Cara
         ojoDer = new Ellipse2D.Float((float)cara.getCenterX()+(radio/4), (float)cara.getCenterY()-(radio/2), (radio/4), (radio/4));
         ojoIzq = new Ellipse2D.Float((float)cara.getCenterX()-(radio/2), (float)cara.getCenterY()-(radio/2), (radio/4), (radio/4));
         
-        font = new Font("Arial", Font.BOLD, 11);
+        font = new Font("Consolas", Font.BOLD, 11);
         nCaras++;
     }
     

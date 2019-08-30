@@ -7,23 +7,23 @@ import Modelo.Diccionario;
 import Modelo.PseudoToken;
 import Modelo.Separador;
 import Modelo.Sintaxis;
-import Modelo.Token;
+import java.awt.Color;
 import java.util.ArrayList;
 
 public class Interprete
 {
     private final MainFrame mFrame;
-    public static String errores = "";
+    private static int nInstruccion = 0;
     
     public Interprete(MainFrame mFrame)
     {
         this.mFrame = mFrame;
+        nInstruccion = 0;
     }
     
-    public boolean interpretar(String code)
+    public void interpretar(String code)
     {
-        errores = "";
-        
+        nInstruccion = 0;
         Limpiador limpiador = new Limpiador();
         Separador separador = new Separador();
         Sintaxis reglas = new Sintaxis();
@@ -34,7 +34,7 @@ public class Interprete
         ArrayList<PseudoToken> pseudoTokens = separador.separar(aux, limpiador.getPosiciones());
         analizadores.asignarTokens(pseudoTokens);
         
-        return analizadores.compararConReglas();
+        analizadores.compararConReglas();
     }
     
     public int crearCara(int x, int y, int radio, String nombre, int modo)
@@ -58,32 +58,17 @@ public class Interprete
         return mFrame.getGrafo().eliminarCara(nombre);
     }
     
-    public int dormir(int segs)
-    {
-        /* if(segs < 0 || segs > 30)
-            return -5; */
-        
-        System.out.println("Programa dormido " + segs + " segundos");
-        
-        /* try
-        {
-            sleep((segs*1000));
-        }
-        
-        catch(InterruptedException e) { System.out.println("Thread error sleep"); } */
-        
-        return 0;      
-    }
-    
     public void refresh() { mFrame.refresh(); }
     
-    public void checkError()
-    {
-        mFrame.getTxtError().setText(errores);
-    }
+    public void finish(boolean fin) { mFrame.finish(!fin); }
     
-    public void setError(String err)
+    public void setError(String err) { mFrame.getTxtError().setText(err); }
+    
+    public void printOutput(String out) { mFrame.getTxtOutput().append((++nInstruccion)+".- "+out+"\n"); }
+    
+    public void printOutError(String out)
     {
-        mFrame.getTxtError().setText(err);
-    }    
+        mFrame.getTxtOutput().setForeground(Color.red);
+        mFrame.getTxtOutput().append((++nInstruccion)+".- "+out+"\n");
+    }
 }

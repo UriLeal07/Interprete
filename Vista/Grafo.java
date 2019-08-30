@@ -34,16 +34,12 @@ public class Grafo
         {
             for(Cara v: caras)
             {
-                // Evitamos que la cara nueva se verifique asi misma
-                //if(!v.equals(c))
-                //{
                     if(testColision(c.getCara(),v.getCara()))
                         return -3;
                     
                     // Si el nombre de la cara ya existe
                     if(v.getNombre().equals(nombre))
                         return -7;
-                //}
             }
         }
         

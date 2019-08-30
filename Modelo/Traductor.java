@@ -16,8 +16,8 @@ public class Traductor
         switch (tipo)
         {
             case 0:
-                // inicio
-                System.out.println("Inicio del programa");
+                //System.out.println("Inicio del programa");
+                interprete.printOutput("Inicio del programa");
             break;
             
             case 3:
@@ -38,31 +38,35 @@ public class Traductor
                     modo = 4;
                 }
                 
-                System.out.println("Creando cara en (" + coordX + ", " + coordY + ") con radio = " + radio + " con "
-                        + "nombre " + nombre + " y en modo " + instruccion.get(10).getValor());
+                //System.out.println("Creando cara en (" + coordX + ", " + coordY + ") con radio = " + radio + " con "
+                //      + "nombre " + nombre + " y en modo " + instruccion.get(10).getValor());
                 
+                interprete.printOutput("Creando cara en (" + coordX + ", " + coordY + ") con radio = " + radio + " con "
+                                        + "nombre " + nombre + " y en modo " + instruccion.get(10).getValor());
                 res = interprete.crearCara(coordX, coordY, radio, nombre, modo);
-                
+                interprete.refresh();
                 
             break;
-                
+            
             case 4:
                 // eliminar cara
                 nombre = instruccion.get(2).getValor();
                 res = interprete.eliminarCara(nombre);
+                interprete.refresh();
                 
-                System.out.println("Eliminando cara con nombre " + nombre);
+                //System.out.println("Eliminando cara con nombre " + nombre);
+                interprete.printOutput("Eliminando cara con nombre " + nombre);
             break;
                 
             case 5:
                 // dormir
                 
                 nseg = Integer.parseInt(instruccion.get(2).getValor());
-                System.out.println("Durmiendo programa " + nseg + " segundos");
-                res = interprete.dormir(nseg);
+                //System.out.println("Durmiendo programa " + nseg + " segundos");
+                interprete.printOutput("Durmiendo programa " + nseg + " segundos");
                 
             break;
-                
+            
             case 6:
                 // cambiar modo
                 nombre = instruccion.get(2).getValor();
@@ -79,13 +83,15 @@ public class Traductor
                 }
                 
                 res = interprete.cambiarModo(nombre, modo);
-                System.out.println("Cambiando modo de cara con nombre " + nombre + " a modo " + instruccion.get(4).getValor());
-            
+                interprete.refresh();
+                //System.out.println("Cambiando modo de cara con nombre " + nombre + " a modo " + instruccion.get(4).getValor());
+                interprete.printOutput("Cambiando modo de cara con nombre " + nombre + " a modo " + instruccion.get(4).getValor());
             break;
                 
             case 2:
                 // fin
-                System.out.println("Fin del programa");
+                //System.out.println("Fin del programa");
+                interprete.printOutput("Fin del programa");
             break;
             
             default:

@@ -11,7 +11,7 @@ import javax.swing.Timer;
 // Clase Analizadoreses: contiene los métodos que se encargan de hacer el análisis léxico, sintáctico y semántico.
 public class Analizadores implements ActionListener
 {
-    private Interprete interprete;
+    private final Interprete interprete;
     int posicion, cont;
     ArrayList<Token> tokens;
     Sintaxis reglas;
@@ -72,11 +72,11 @@ public class Analizadores implements ActionListener
     }
     
     @Override
-    public void actionPerformed(ActionEvent e) {
-        compararConReglas();        
+    public void actionPerformed(ActionEvent e){
+        compararConReglas();
     }
     
-    public boolean compararConReglas()
+    public void compararConReglas()
     {
         String error = "";
         ArrayList<Token> instruccion = new ArrayList<>();
@@ -91,10 +91,11 @@ public class Analizadores implements ActionListener
             
             String aux = reglas.getRegla(t.getTipo());
             if (contFin > 0) {
-                System.out.println("No se esperaba: " + diccionario.obtenerEtiqueta(t.getTipo()) + " en la línea: " + t.getLinea());
+                //System.out.println("No se esperaba: " + diccionario.obtenerEtiqueta(t.getTipo()) + " en la línea: " + t.getLinea());
                 error = "No se esperaba: " + diccionario.obtenerEtiqueta(t.getTipo()) + " en la línea: " + t.getLinea();
                 //Interprete.errores += error;
                 interprete.setError(error);
+                interprete.printOutput(error);
                 // ejecutar metodo para escribir errores
                 i++;
             } else {
@@ -114,10 +115,11 @@ public class Analizadores implements ActionListener
                                 instruccion.add(t);
                             } else {
                                 if (!banError) {
-                                    System.out.println("Se esperaba: " + diccionario.obtenerEtiqueta(numEntero) + " en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor());
+                                    //System.out.println("Se esperaba: " + diccionario.obtenerEtiqueta(numEntero) + " en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor());
                                     banError = true;
                                     error = "Se esperaba: " + diccionario.obtenerEtiqueta(numEntero) + " en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor();
                                     interprete.setError(error);
+                                    interprete.printOutput(error);
                                 }
                                 j = arr.length; //se sale, hay que comparar con el tamaño del array
                                 i = tokens.size();
@@ -135,22 +137,25 @@ public class Analizadores implements ActionListener
                         // si instrucción es dormir
                         if (instruccion.get(0).getValor().equals("Dormir")) {
                             if (Integer.parseInt(instruccion.get(2).getValor()) <= 0 || Integer.parseInt(instruccion.get(2).getValor()) > 20) {
-                                System.out.println("Tiempo fuera de los rangos válidos (1-20). Línea: " + t.getLinea());
+                                //System.out.println("Tiempo fuera de los rangos válidos (1-20). Línea: " + t.getLinea());
                                 banError = true;
                                 i = tokens.size();
                                 error = "Tiempo fuera de los rangos válidos (1-20). Línea: " + t.getLinea();
                                 interprete.setError(error);
+                                interprete.printOutput(error);
                             } else {
-                                System.out.println("Durmiendo programa " + instruccion.get(2).getValor() + " segundos");
+                                //System.out.println("Durmiendo programa " + instruccion.get(2).getValor() + " segundos");
+                                interprete.printOutput("Durmiendo programa " + instruccion.get(2).getValor() + " segundos");
                                 i = i+j; //0+3
                                 posicion = i;
-
+                                
+                                // Creamos nuevo timer con duracion leida en segundos y lo ejecutamos una sola vez
                                 Timer timer = new Timer((Integer.parseInt(instruccion.get(2).getValor()) * 1000), this);
                                 timer.setRepeats(false);
                                 timer.start();
                                 // terminar
-
-                                return false;
+                                
+                                return;
                             }
                         } else {
                             int errorNo = trad.traducir(instruccion, interprete);
@@ -204,6 +209,7 @@ public class Analizadores implements ActionListener
                                 }
 
                                 interprete.setError(error);
+                                interprete.printOutput(error);
                             }
                         }
                         
@@ -215,17 +221,19 @@ public class Analizadores implements ActionListener
                 } else {
                     if (i == 0) {
                         if (!banError) {
-                            System.out.println("Se esperaba: " + diccionario.obtenerEtiqueta(0) + " en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor());
+                            //System.out.println("Se esperaba: " + diccionario.obtenerEtiqueta(0) + " en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor());
                             error = "Se esperaba: " + diccionario.obtenerEtiqueta(0) + " en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor();
                             interprete.setError(error);
+                            interprete.printOutput(error);
                             banError = true;
                         }
 
                     } else if (cont != tokens.size() - 1){
                         if (!banError) {
-                            System.out.println("Se esperaba: nombre de función en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor());
+                            //System.out.println("Se esperaba: nombre de función en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor());
                             error = "Se esperaba: nombre de función en la línea: " + t.getLinea() + " pero se recibió: " + diccionario.obtenerEtiqueta(t.getTipo()) + " - " + t.getValor();
                             interprete.setError(error);
+                            interprete.printOutput(error);
                             banError = true;
                         }
                     }
@@ -236,18 +244,20 @@ public class Analizadores implements ActionListener
                 }
             }
         }
+            
         
         if (i == tokens.size() && contFin <= 0) {
             if (t.getTipo() != 2) {
                 if (!banError) {
-                    System.out.println("Se esperaba: palabra reservada Fin en la línea: " + t.getLinea());
+                    //System.out.println("Se esperaba: palabra reservada Fin en la línea: " + t.getLinea());
                     error = "Se esperaba: palabra reservada Fin en la línea: " + t.getLinea();
                     banError = true;
                     interprete.setError(error);
+                    interprete.printOutput(error);
                 }
             }
         }
         
-        return banError;
+        interprete.finish(banError);
     }
 }

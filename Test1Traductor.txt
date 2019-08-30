@@ -1,0 +1,12 @@
+Programa primerPrograma
+Inicio
+   DibujarCara(30,30,20, Caro, enojada)
+   Dormir(3)
+   DibujarCara(50,100,20,Manuel,feliz)
+   Dormir(2)
+   EliminarCara(Caro)
+   Dormir(3)
+   DibujarCara(100,200,30, Caro, triste)
+   Dormir(2)
+   CambiarModo(Caro,dormida)
+Fin
