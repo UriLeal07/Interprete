@@ -15,7 +15,7 @@ class AboutFrame extends javax.swing.JFrame
         {
             ImageIcon icon = new ImageIcon(iconURL);
             setIconImage(icon.getImage());
-        }        
+        }
     }
     
     @SuppressWarnings("unchecked")

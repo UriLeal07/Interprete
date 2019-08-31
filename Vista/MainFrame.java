@@ -10,8 +10,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.nio.file.Files;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -31,6 +33,13 @@ public class MainFrame extends javax.swing.JFrame
     {
         initComponents();
         
+        URL iconURL = getClass().getResource("/Icons/config.png");
+        
+        if(iconURL != null)
+        {
+            ImageIcon icon = new ImageIcon(iconURL);
+            setIconImage(icon.getImage());
+        }
         setLocationRelativeTo(null);
         setTitle("Traductor");
         
