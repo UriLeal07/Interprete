@@ -26,10 +26,10 @@ Fin
 * Dormir(nsegundos)
 * CambiarModo(nombreCara, nuevoModo)
 
+## Ejemplos de programas
 
-## Ejemplos de programas válidos
-
-Ejemplo 1:
+### Programas válidos
+**Ejemplo 1:**
 ```
 Programa primerPrograma
 Inicio
@@ -43,9 +43,9 @@ Inicio
    CambiarModo(Caro,dormida)
 Fin
 ```
-Ejemplo 2:
+**Ejemplo 2:**
 ```
-Programa ejemploDos
+Programa otro-Ejemplo
 Inicio  DibujarCara(40, 30, 25,  Miguel, triste) Dormir(3)
    CambiarModo(Miguel, feliz)   DibujarCara
 (80, 150, 50,   Carmen, neutral)
@@ -53,15 +53,23 @@ Dormir ( 2)
 EliminarCara (Carmen)   Fin
 ```
 
-## Ejemplos de programas inválidos
-
+### Programas inválidos
+**Ejemplo 1:**
 ```
-Programa segundoPrograma
+Programa tercerProgr
 Inicio
-   DibujarCara(  30, 60,120, Samuel, enojada)  // Debería marcar error ya que la cara no esta contenida completamenta en la pantalla
-   Dormir(2)    EliminarCara(Guillermo)   //Error, no existe Guillermo
-dormir(3)   // Error dormir no es una instrucción, la correcta es Dormir
+   DibujarCara(  30, 60,120, Samuel, enojada)  // Debería marcar error ya que la cara no esta contenida completamente en la UI
+   Dormir(2)    EliminarCara(Guillermo)   // Error: no existe Guillermo
+   dormir(3)   // Error: dormir no es una instrucción, la correcta es Dormir
    DibujarCara(70,50,20, Caro, triste)
    Dormir(2)    CambiarModo(Caro,dormida)
 Fin
 ```
+
+**Ejemplo 2:**
+```
+Programa cuartoProgr
+Inicio
+   DibujarCara(  30, 60,120, Samuel, enojada)
+// Error: La palabra Fin no existe
+``
