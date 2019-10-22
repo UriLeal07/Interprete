@@ -72,4 +72,4 @@ Programa cuartoProgr
 Inicio
    DibujarCara(  30, 60,120, Samuel, enojada)
 // Error: La palabra Fin no existe
-``
+```
